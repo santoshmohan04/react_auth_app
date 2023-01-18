@@ -1,0 +1,25 @@
+h2 {
+  text-align:center;
+}
+
+h3 {
+  text-align: left;
+}
+
+#cities {
+  border-style: groove;
+  padding-top: 10px;
+}
+
+#city-weather {
+  border-style: groove;
+}
+
+ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.pointer {
+  cursor: pointer;
+}
