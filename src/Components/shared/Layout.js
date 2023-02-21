@@ -9,9 +9,11 @@ const Layout = ({ children }) => {
     <>
       <Navbar bg="primary" variant="dark">
         <Container>
-          <Navbar.Brand as={Link} to="/">
-            Misc Apps
-          </Navbar.Brand>
+          {user && (
+            <Navbar.Brand as={Link} to="/home">
+              Misc Apps
+            </Navbar.Brand>
+          )}
           <Nav>
             {user && (
               <Nav.Link as={Link} to="/movies">
@@ -29,8 +31,13 @@ const Layout = ({ children }) => {
           <Nav className="ms-auto">
             {user && <Nav.Link>{user.email}</Nav.Link>}
             {!user && (
-              <Nav.Link as={Link} to="/login">
+              <Nav.Link as={Link} to="/">
                 Login
+              </Nav.Link>
+            )}
+            {!user && (
+              <Nav.Link as={Link} to="/signup">
+                Signup
               </Nav.Link>
             )}
           </Nav>

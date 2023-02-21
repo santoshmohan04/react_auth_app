@@ -1,7 +1,15 @@
-import { Controller, Get, Header, Post, Req, Res, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Req,
+  Res,
+  UseGuards,
+  Body,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth/auth.service';
-import {Response} from 'express'
+import { Response } from 'express';
 
 @Controller()
 export class AppController {
@@ -9,60 +17,83 @@ export class AppController {
 
   @Post('auth/login')
   @UseGuards(AuthGuard('local'))
-  async login(@Req() req,@Res({passthrough:true}) res:Response) {
+  async login(@Req() req, @Res({ passthrough: true }) res: Response) {
     const jwtToken = await this.authService.getToken(req.user);
     const secretData = {
       accessToken: jwtToken,
-      refreshToken: "wCH7PEZy1AbvsASAPyM9qo7Bus3qqy"
-    }
-    res.cookie('auth-cookie', secretData,{
+      refreshToken: 'wCH7PEZy1AbvsASAPyM9qo7Bus3qqy',
+    };
+    res.cookie('auth-cookie', secretData, {
       httpOnly: true,
-      expires: new Date(new Date().getTime()+86409000),
+      expires: new Date(new Date().getTime() + 86409000),
     });
-   
-    // req.
-    // req.coo
-    return {msg:"success"};
+    return { msg: 'success' };
+  }
+
+  @Post('/signup')
+  async addUser(
+    @Body('firstName') firstName: string,
+    @Body('lastName') lastName: string,
+    @Body('email') email: string,
+    @Body('phone') phone: string,
+    @Body('password') pswd: string,
+    @Body('confirmPassword') confirm_pswd: string,
+  ) {
+    const response = await this.authService.createUser(
+      firstName,
+      lastName,
+      phone,
+      email,
+      pswd,
+      confirm_pswd,
+    );
+
+    return response;
   }
 
   @UseGuards(AuthGuard('jwt'))
   @Get('user-profile')
-  userProfile(@Req() req){
+  userProfile(@Req() req) {
     return req.user;
   }
 
   @UseGuards(AuthGuard('jwt'))
   @Get('liked-movies')
-  likedMovies(){
+  likedMovies() {
     // res.cookie('temp', "hello",{
     //   httpOnly: true,
     //   expires: new Date(new Date().getTime()+86409000),
     // });
-    return ["Avengers EndGame", "The Lion King", "Harry Potter", "Sherlock Holmes"];
+    return [
+      'Avengers EndGame',
+      'The Lion King',
+      'Harry Potter',
+      'Sherlock Holmes',
+    ];
   }
 
   @UseGuards(AuthGuard('refresh-token'))
   @Get('refresh-token')
-  async refreshToken(@Req() req,@Res({passthrough:true}) res:Response){
+  async refreshToken(@Req() req, @Res({ passthrough: true }) res: Response) {
     const jwtToken = await this.authService.getToken(req.user);
     const secretData = {
       accessToken: jwtToken,
-      refreshToken: "wCH7PEZy1AbvsASAPyM9qo7Bus3qqy"
-    }
-   
-    res.cookie('auth-cookie', secretData,{
+      refreshToken: 'wCH7PEZy1AbvsASAPyM9qo7Bus3qqy',
+    };
+
+    res.cookie('auth-cookie', secretData, {
       httpOnly: true,
-      expires: new Date(new Date().getTime()+86409000),
+      expires: new Date(new Date().getTime() + 86409000),
     });
-   
+
     // req.
     // req.coo
-    return {msg:"success"};
+    return { msg: 'success' };
   }
 
   @Get('logout')
-  async logout(@Res({passthrough:true}) res:Response){
+  async logout(@Res({ passthrough: true }) res: Response) {
     res.clearCookie('auth-cookie');
-    return {msg:"success"};
+    return { msg: 'success' };
   }
 }

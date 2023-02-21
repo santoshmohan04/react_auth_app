@@ -12,12 +12,13 @@ export const AuthContextProvider = ({ children }) => {
     }
     return null;
   });
+  let url = "http://localhost:4000/";
   const navigate = useNavigate();
   const login = async (payload) => {
-    await axios.post("http://localhost:4000/auth/login", payload, {
+    await axios.post(`${url}auth/login`, payload, {
       withCredentials: true,
     });
-    let apiResponse = await axios.get("http://localhost:4000/user-profile", {
+    let apiResponse = await axios.get(`${url}user-profile`, {
       withCredentials: true,
     });
     localStorage.setItem("userProfile", JSON.stringify(apiResponse.data));
@@ -25,16 +26,20 @@ export const AuthContextProvider = ({ children }) => {
     navigate("/");
   };
 
+  const signup = async (payload) => {
+    await axios.post(`${url}signup`, payload, { withCredentials: true });
+  };
+
   const logout = async () => {
-    await axios.get("http://localhost:4000/logout", { withCredentials: true });
+    await axios.get(`${url}logout`, { withCredentials: true });
     localStorage.removeItem("userProfile");
     setUser(null);
-    navigate("/login");
+    navigate("/");
   };
 
   return (
     <>
-      <AuthContext.Provider value={{ user, login, logout }}>
+      <AuthContext.Provider value={{ user, login, logout, signup }}>
         {children}
       </AuthContext.Provider>
     </>

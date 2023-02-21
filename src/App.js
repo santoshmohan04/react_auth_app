@@ -8,6 +8,7 @@ import { AuthContextProvider } from "./Components/shared/AuthContext";
 import Movies from "./pages/Movies";
 import ProtectedRoute from "./Components/shared/ProtectedRoute";
 import Shopping from "./pages/shopping";
+import Signup from "./pages/signup";
 
 function App() {
   return (
@@ -15,12 +16,27 @@ function App() {
       <AuthContextProvider>
         <Layout>
           <Routes>
-            <Route path="/" element={<Home />}></Route>
             <Route
-              path="/login"
+              path="/home"
+              element={
+                <ProtectedRoute accessBy="authenticated">
+                  <Home />
+                </ProtectedRoute>
+              }
+            ></Route>
+            <Route
+              path="/"
               element={
                 <ProtectedRoute accessBy="non-authenticated">
                   <Login />
+                </ProtectedRoute>
+              }
+            ></Route>
+            <Route
+              path="/signup"
+              element={
+                <ProtectedRoute accessBy="non-authenticated">
+                  <Signup />
                 </ProtectedRoute>
               }
             ></Route>
